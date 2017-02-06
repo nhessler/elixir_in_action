@@ -1,13 +1,11 @@
 defmodule ElixirInActionTodoList.TodoList do
-  def new, do: %{}
+  alias ElixirInActionTodoList.{MultiMap}
+
+  def new, do: MultiMap.new
 
   def add_entry(todo_list, date, todo) do
-    Map.update(
-      todo_list,
-      date,
-      [todo],
-      fn(todos) -> [todo | todos] end)
+    MultiMap.add(todo_list, date, todo)
   end
 
-  def entries(todo_list, date), do: Map.get(todo_list, date, [])
+  def entries(todo_list, date), do: MultiMap.get(todo_list, date)
 end
