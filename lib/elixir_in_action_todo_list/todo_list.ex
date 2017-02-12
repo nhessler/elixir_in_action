@@ -3,7 +3,12 @@ defmodule ElixirInActionTodoList.TodoList do
 
   defstruct auto_id: 1, entries: Map.new
 
-  def new, do: %TodoList{}
+  def new(entries \\ []) do
+    Enum.reduce(
+      entries,
+      %TodoList{},
+      fn(entry, list) -> add_entry(list, entry) end)
+  end
 
   def add_entry(%TodoList{entries: entries, auto_id: auto_id}, entry) do
     entry = Map.put(entry, :id, auto_id)
