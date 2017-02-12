@@ -1,18 +1,7 @@
 defmodule ElixirInActionTodoList do
   @moduledoc """
-  Documentation for ElixirInActionTodoList.
+  This is the todo list app that is built in Elixir in Action
+
+  All uses of `HashDict` have been changed to use `Map`
   """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> ElixirInActionTodoList.hello
-      :world
-
-  """
-  def hello do
-    :world
-  end
 end
