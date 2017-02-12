@@ -16,4 +16,14 @@ defmodule ElixirInActionTodoList.TodoList do
     |> Stream.filter(fn({_, entry}) -> entry.date == date end)
     |> Enum.map(fn({_, entry}) -> entry end)
   end
+
+  def update_entry(%TodoList{entries: entries} = todo_list, entry_id, updater_function) do
+    case entries[entry_id] do
+      nil -> todo_list
+      old_entry ->
+        new_entry = %{id: ^entry_id} = updater_function.(old_entry)
+        new_entries = Map.put(entries, entry_id, new_entry)
+        %TodoList{ todo_list | entries: new_entries}
+    end
+  end
 end
