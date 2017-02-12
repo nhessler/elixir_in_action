@@ -26,4 +26,9 @@ defmodule ElixirInActionTodoList.TodoList do
         %TodoList{ todo_list | entries: new_entries}
     end
   end
+
+  def delete_entry(%TodoList{entries: entries} = todo_list, entry_id) do
+    new_entries = Map.delete(entries, entry_id)
+    %{todo_list | entries: new_entries}
+  end
 end
