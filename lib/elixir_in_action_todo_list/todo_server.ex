@@ -1,23 +1,24 @@
 defmodule ElixirInActionTodoList.TodoServer do
   alias ElixirInActionTodoList.{TodoList}
   def start do
-    spawn(fn -> loop(TodoList.new) end)
+    pid = spawn(fn -> loop(TodoList.new) end)
+    Process.register(pid, __MODULE__)
   end
 
-  def add_entry(todo_server, new_entry) do
-    send(todo_server, {:add_entry, new_entry})
+  def add_entry(new_entry) do
+    send(__MODULE__, {:add_entry, new_entry})
   end
 
-  def update_entry(todo_server, entry_id, updater_function) do
-    send(todo_server, {:update_entry, entry_id, updater_function})
+  def update_entry(entry_id, updater_function) do
+    send(__MODULE__, {:update_entry, entry_id, updater_function})
   end
 
-  def delete_entry(todo_server, entry_id) do
-    send(todo_server, {:delete_entry, entry_id})
+  def delete_entry(entry_id) do
+    send(__MODULE__, {:delete_entry, entry_id})
   end
 
-  def entries(todo_server, date) do
-    send(todo_server, {:entries, self, date})
+  def entries(date) do
+    send(__MODULE__, {:entries, self, date})
     receive do
       {:todo_entries, entries} -> entries
       after 5000 -> {:error, :timeout}
