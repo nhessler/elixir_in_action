@@ -1,4 +1,4 @@
-defmodule ElixirInActionTodoList.TodoList.CsvImporter do
+defmodule Todo.List.CsvImporter do
 
   def import!(filename) do
     filename
@@ -7,7 +7,7 @@ defmodule ElixirInActionTodoList.TodoList.CsvImporter do
     |> Stream.map(&(String.split(&1, ",")))
     |> Stream.map(&build_date_tuple/1)
     |> Enum.to_list()
-    |> ElixirInActionTodoList.TodoList.new()
+    |> Todo.List.new()
   end
 
   defp build_date_tuple([date_string, title]) do
