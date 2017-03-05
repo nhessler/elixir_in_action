@@ -4,8 +4,8 @@ defmodule Todo.Database do
 
   # API
 
-  def start(db_folder) do
-    GenServer.start(__MODULE__, db_folder, name: __MODULE__)
+  def start_link(db_folder) do
+    GenServer.start_link(__MODULE__, db_folder, name: __MODULE__)
   end
 
   def store(key, data) do
@@ -19,8 +19,10 @@ defmodule Todo.Database do
   # Callbacks
 
   def init(db_folder) do
+    IO.puts "starting #{__MODULE__}"
+
     workers = 0..2
-    |> Enum.map(&(start_worker(&1, db_folder)))
+    |> Enum.map(&(start_link_worker(&1, db_folder)))
     |> Enum.into(%{})
 
     {:ok, workers}
@@ -41,8 +43,8 @@ defmodule Todo.Database do
     {:noreply, workers}
   end
 
-  defp start_worker(index, db_folder) do
-    {:ok, worker_pid} = Worker.start(db_folder)
+  defp start_link_worker(index, db_folder) do
+    {:ok, worker_pid} = Worker.start_link(db_folder)
     {index, worker_pid}
   end
 

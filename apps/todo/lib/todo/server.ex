@@ -3,8 +3,8 @@ defmodule Todo.Server do
 
   # Public API
 
-  def start(name) do
-    GenServer.start(__MODULE__, name)
+  def start_link(name) do
+    GenServer.start_link(__MODULE__, name)
   end
 
   def add_entry(server_pid, new_entry) do
@@ -26,6 +26,8 @@ defmodule Todo.Server do
   # GenServer Callbacks
 
   def init(name) do
+    IO.puts "starting #{name} #{__MODULE__}"
+
     new_todo_list = Todo.Database.get(name) || Todo.List.new
     {:ok, {name, new_todo_list}}
   end
