@@ -3,8 +3,8 @@ defmodule Todo.Server do
 
   # Public API
 
-  def start(name) do
-    GenServer.start(__MODULE__, name)
+  def start_link(name) do
+    GenServer.start_link(__MODULE__, name)
   end
 
   def add_entry(server_pid, new_entry) do

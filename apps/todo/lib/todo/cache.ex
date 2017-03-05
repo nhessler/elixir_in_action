@@ -14,7 +14,7 @@ defmodule Todo.Cache do
   def init(_) do
     IO.puts "starting #{__MODULE__}"
 
-    Todo.Database.start("./persist")
+    Todo.Database.start_link("./persist")
     {:ok, %{}}
   end
 
@@ -23,7 +23,7 @@ defmodule Todo.Cache do
       {:ok, todo_server} ->
         {:reply, todo_server, todo_servers}
       :error ->
-        {:ok, new_todo_server} = Todo.Server.start(todo_list_name)
+        {:ok, new_todo_server} = Todo.Server.start_link(todo_list_name)
         new_todo_servers = Map.put(todo_servers, todo_list_name, new_todo_server)
         {:reply, new_todo_server, new_todo_servers}
     end
