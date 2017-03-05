@@ -18,6 +18,8 @@ defmodule Todo.DatabaseWorker do
   # Callbacks
 
   def init(db_folder) do
+    IO.puts "starting #{__MODULE__}"
+
     File.mkdir_p(db_folder)
     {:ok, db_folder}
   end

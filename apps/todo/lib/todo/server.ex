@@ -26,6 +26,8 @@ defmodule Todo.Server do
   # GenServer Callbacks
 
   def init(name) do
+    IO.puts "starting #{name} #{__MODULE__}"
+
     new_todo_list = Todo.Database.get(name) || Todo.List.new
     {:ok, {name, new_todo_list}}
   end

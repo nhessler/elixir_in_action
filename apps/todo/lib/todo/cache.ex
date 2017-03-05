@@ -12,6 +12,8 @@ defmodule Todo.Cache do
   # Callbacks
 
   def init(_) do
+    IO.puts "starting #{__MODULE__}"
+
     Todo.Database.start("./persist")
     {:ok, %{}}
   end

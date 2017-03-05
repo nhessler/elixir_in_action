@@ -19,6 +19,8 @@ defmodule Todo.Database do
   # Callbacks
 
   def init(db_folder) do
+    IO.puts "starting #{__MODULE__}"
+
     workers = 0..2
     |> Enum.map(&(start_worker(&1, db_folder)))
     |> Enum.into(%{})
