@@ -1,5 +1,6 @@
 defmodule Todo.Database do
   use GenServer
+  alias Todo.DatabaseWorker, as: Worker
 
   # API
 
@@ -8,7 +9,7 @@ defmodule Todo.Database do
   end
 
   def store(key, data) do
-    GenServer.cast(__MODULE__, {:store, key, data} )
+    GenServer.cast(__MODULE__, {:store, key, data})
   end
 
   def get(key) do
@@ -18,31 +19,34 @@ defmodule Todo.Database do
   # Callbacks
 
   def init(db_folder) do
-    File.mkdir_p(db_folder)
-    {:ok, db_folder}
+    workers = 0..2
+    |> Enum.map(&(start_worker(&1, db_folder)))
+    |> Enum.into(%{})
+
+    {:ok, workers}
   end
 
-  def handle_cast({:store, key, data}, db_folder) do
-    spawn(fn ->
-      file_name(db_folder, key)
-      |> File.write!(:erlang.term_to_binary(data))
-    end)
-
-    {:noreply, db_folder}
+  def handle_cast({:store, key, data}, workers) do
+    Worker.store(get_worker(workers, key), key, data)
+    {:noreply, workers}
   end
 
-  def handle_call({:get, key}, caller, db_folder) do
-    spawn(fn ->
-      data = case File.read(file_name(db_folder, key)) do
-               {:ok, contents} -> :erlang.binary_to_term(contents)
-               _ -> nil
-             end
-
-      GenServer.reply(caller, data)
-    end)
-
-    {:noreply, db_folder}
+  def handle_call({:get, key}, caller, workers) do
+    Worker.get(get_worker(workers, key), key, caller)
+    {:noreply, workers}
   end
 
-  defp file_name(folder, file), do: "#{folder}/#{file}"
+  def handle_info({:workers, caller}, workers) do
+    send(caller, {:workers, workers})
+    {:noreply, workers}
+  end
+
+  defp start_worker(index, db_folder) do
+    {:ok, worker_pid} = Worker.start(db_folder)
+    {index, worker_pid}
+  end
+
+  defp get_worker(workers, key) do
+    Map.get(workers, :erlang.phash2(key, 3))
+  end
 end
