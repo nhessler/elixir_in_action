@@ -3,7 +3,7 @@ defmodule Todo.Cache do
 
   # API
 
-  def start, do: GenServer.start(__MODULE__, nil, name: __MODULE__)
+  def start_link, do: GenServer.start_link(__MODULE__, nil, name: __MODULE__)
 
   def server_process(todo_list_name) do
     GenServer.call(__MODULE__, {:server_process, todo_list_name})
