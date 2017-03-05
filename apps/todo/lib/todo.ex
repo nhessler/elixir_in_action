@@ -1,4 +1,4 @@
-defmodule ElixirInActionTodoList do
+defmodule Todo do
   @moduledoc """
   This is the todo list app that is built in Elixir in Action
 

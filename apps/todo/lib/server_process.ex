@@ -1,4 +1,4 @@
-defmodule ElixirInActionTodoList.ServerProcess do
+defmodule ServerProcess do
   def call(server_pid, request) do
     send(server_pid, {:call, request, self()})
 

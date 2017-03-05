@@ -1,6 +1,6 @@
-defmodule ElixirInActionTodoListTest do
+defmodule TodoTest do
   use ExUnit.Case
-  doctest ElixirInActionTodoList
+  doctest Todo
 
   test "the truth" do
     assert 1 + 1 == 2

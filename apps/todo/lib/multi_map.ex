@@ -1,4 +1,4 @@
-defmodule ElixirInActionTodoList.MultiMap do
+defmodule MultiMap do
   def new, do: %{}
 
   def add(todo_list, date, todo) do
