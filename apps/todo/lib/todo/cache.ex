@@ -14,7 +14,6 @@ defmodule Todo.Cache do
   def init(_) do
     IO.puts "starting #{__MODULE__}"
 
-    Todo.Database.start_link("./persist")
     {:ok, %{}}
   end
 
