@@ -15,6 +15,7 @@ defmodule Todo.Supervisor do
     processes = [
       worker(Todo.ProcessRegistry, []),
       supervisor(Todo.Database, ["./persist"]),
+      supervisor(Todo.ServerSupervisor, []),
       worker(Todo.Cache, [])
     ]
 
