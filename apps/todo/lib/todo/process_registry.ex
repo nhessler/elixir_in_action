@@ -4,7 +4,10 @@ defmodule Todo.ProcessRegistry do
 
   # API
 
-  def start_link, do: GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+  def start_link do
+    IO.puts "starting #{__MODULE__}"
+    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+  end
 
   def register_name(complex_name, pid) do
     GenServer.call(__MODULE__, {:register_name, complex_name, pid})
