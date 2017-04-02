@@ -1,54 +1,26 @@
 defmodule Todo.Database do
-  use GenServer
-  alias Todo.DatabaseWorker, as: Worker
+
+  @pool_size 3
 
   # API
 
   def start_link(db_folder) do
-    GenServer.start_link(__MODULE__, db_folder, name: __MODULE__)
+    Todo.PoolSupervisor.start_link(db_folder, @pool_size)
   end
 
   def store(key, data) do
-    GenServer.cast(__MODULE__, {:store, key, data})
+    key
+    |> choose_worker
+    |> Todo.DatabaseWorker.store(key, data)
   end
 
   def get(key) do
-    GenServer.call(__MODULE__, {:get, key})
+    key
+    |> choose_worker
+    |> Todo.DatabaseWorker.get(key)
   end
 
-  # Callbacks
-
-  def init(db_folder) do
-    IO.puts "starting #{__MODULE__}"
-
-    workers = 0..2
-    |> Enum.map(&(start_link_worker(&1, db_folder)))
-    |> Enum.into(%{})
-
-    {:ok, workers}
-  end
-
-  def handle_cast({:store, key, data}, workers) do
-    Worker.store(get_worker(workers, key), key, data)
-    {:noreply, workers}
-  end
-
-  def handle_call({:get, key}, caller, workers) do
-    Worker.get(get_worker(workers, key), key, caller)
-    {:noreply, workers}
-  end
-
-  def handle_info({:workers, caller}, workers) do
-    send(caller, {:workers, workers})
-    {:noreply, workers}
-  end
-
-  defp start_link_worker(index, db_folder) do
-    {:ok, worker_pid} = Worker.start_link(db_folder)
-    {index, worker_pid}
-  end
-
-  defp get_worker(workers, key) do
-    Map.get(workers, :erlang.phash2(key, 3))
+  defp choose_worker(key) do
+    :erlang.phash2(key, @pool_size) + 1
   end
 end

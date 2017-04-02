@@ -3,29 +3,30 @@ defmodule Todo.Cache do
 
   # API
 
-  def start_link, do: GenServer.start_link(__MODULE__, nil, name: __MODULE__)
+  def start_link do
+    IO.puts "starting #{__MODULE__}"
+    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
+  end
 
   def server_process(todo_list_name) do
-    GenServer.call(__MODULE__, {:server_process, todo_list_name})
+    case Todo.Server.whereis(todo_list_name) do
+      :undefined ->
+        GenServer.call(__MODULE__, {:server_process, todo_list_name})
+      pid -> pid
+    end
   end
 
   # Callbacks
 
-  def init(_) do
-    IO.puts "starting #{__MODULE__}"
+  def handle_call({:server_process, todo_list_name}, _, state) do
+    server_pid =
+      case Todo.Server.whereis(todo_list_name) do
+        :undefined ->
+          {:ok, pid} = Todo.ServerSupervisor.start_child(todo_list_name)
+          pid
+        pid -> pid
+      end
 
-    Todo.Database.start_link("./persist")
-    {:ok, %{}}
-  end
-
-  def handle_call({:server_process, todo_list_name}, _, todo_servers) do
-    case Map.fetch(todo_servers, todo_list_name) do
-      {:ok, todo_server} ->
-        {:reply, todo_server, todo_servers}
-      :error ->
-        {:ok, new_todo_server} = Todo.Server.start_link(todo_list_name)
-        new_todo_servers = Map.put(todo_servers, todo_list_name, new_todo_server)
-        {:reply, new_todo_server, new_todo_servers}
-    end
+    {:reply, server_pid, state}
   end
 end
