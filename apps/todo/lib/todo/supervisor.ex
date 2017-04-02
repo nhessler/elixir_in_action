@@ -13,7 +13,8 @@ defmodule Todo.Supervisor do
     IO.puts "starting #{__MODULE__}"
 
     processes = [
-      worker(Todo.Database, ["./persist"]),
+      worker(Todo.ProcessRegistry, []),
+      supervisor(Todo.Database, ["./persist"]),
       worker(Todo.Cache, [])
     ]
 
