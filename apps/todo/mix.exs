@@ -19,7 +19,7 @@ defmodule Todo.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger],
+    [extra_applications: [:logger, :gproc],
      mod: {Todo, []}]
   end
 
@@ -37,6 +37,9 @@ defmodule Todo.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:meck, "0.8.2", only: :test}]
+    [
+      {:gproc, "0.3.1"},
+      {:meck, "0.8.2", only: :test}
+    ]
   end
 end
