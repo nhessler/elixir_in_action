@@ -17,7 +17,7 @@ defmodule Todo.DatabaseWorker do
   end
 
   defp via_tuple(id) do
-    {:via, Todo.ProcessRegistry, {:database_worker, id}}
+    {:via, :gproc, {:n, :l, {:database_worker, id}}}
   end
   # Callbacks
 
