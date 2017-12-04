@@ -6,11 +6,15 @@ defmodule Todo.ProcessRegistry do
 
   def start_link do
     IO.puts "starting #{__MODULE__}"
-    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
   def register_name(complex_name, pid) do
-    GenServer.call(__MODULE__, {:register_name, complex_name, pid})
+    case :ets.lookup(:process_registry, complex_name)  do
+      [{^complex_name, _}] -> :no
+      _ ->
+        GenServer.call(__MODULE__, {:register_name, complex_name, pid})
+    end
   end
 
   def unregister_name(complex_name) do
@@ -18,7 +22,11 @@ defmodule Todo.ProcessRegistry do
   end
 
   def whereis_name(complex_name) do
-    GenServer.call(__MODULE__, {:whereis_name, complex_name})
+    case :ets.lookup(:process_registry, complex_name)  do
+      [{^complex_name, value}] -> value
+      _ ->
+        :undefined
+    end
   end
 
   def send(key, message) do
@@ -32,22 +40,25 @@ defmodule Todo.ProcessRegistry do
 
   # Callbacks
 
+  def init(_) do
+    :ets.new(:process_registry, [:set, :named_table, :protected])
+    {:ok, nil}
+  end
+
   def handle_call({:register_name, key, pid}, _, registry) do
-    case Map.get(registry, key) do
-      nil ->
-        Process.monitor(pid)
-        {:reply, :yes, Map.put(registry, key, pid)}
-      _ ->
+    case :ets.lookup(:process_registry, key)  do
+      [{^key, _}] ->
         {:reply, :no, registry}
+      _ ->
+        Process.monitor(pid)
+        :ets.insert(:process_registry, {key, pid})
+        {:reply, :yes, registry}
     end
   end
 
-  def handle_call({:whereis_name, key}, _, registry) do
-    {:reply, Map.get(registry, key, :undefined), registry}
-  end
-
   def handle_call({:unregister_name, key}, _, registry) do
-    {:reply, key, Map.delete(registry, key)}
+    :ets.delete(:process_registry, key)
+    {:reply, key, registry}
   end
 
   def handle_info({:DOWN, _, :process, pid, _}, registry) do
@@ -57,8 +68,7 @@ defmodule Todo.ProcessRegistry do
   def handle_info(_, registry), do: {:noreply, registry}
 
   defp deregister_pid(registry, pid) do
+    :ets.match_delete(:process_registry, {:_, pid})
     registry
-    |> Enum.reject(fn {_, v} -> v == pid end)
-    |> Enum.into(%{})
   end
 end
