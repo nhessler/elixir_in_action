@@ -8,6 +8,9 @@ defmodule Todo do
   """
 
   def start(_type,  _arguments) do
-    Todo.Supervisor.start_link
+    response = Todo.Supervisor.start_link
+    Todo.Web.start_server
+    response
   end
+
 end
