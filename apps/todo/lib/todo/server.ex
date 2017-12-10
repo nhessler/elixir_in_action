@@ -4,11 +4,11 @@ defmodule Todo.Server do
   # Public API
 
   def start_link(name) do
-    GenServer.start_link(__MODULE__, name, name: via_tuple(name))
+    GenServer.start_link(__MODULE__, name, name: global_tuple(name))
   end
 
   def whereis(name) do
-    :gproc.whereis_name({:n, :l, {:todo_server, name}})
+    :global.whereis_name({:todo_server, name})
   end
 
   def add_entry(server_pid, new_entry) do
@@ -27,8 +27,8 @@ defmodule Todo.Server do
     GenServer.call(server_pid, {:entries, date})
   end
 
-  defp via_tuple(name) do
-    {:via, :gproc, {:n, :l, {:todo_server, name}}}
+  defp global_tuple(name) do
+    {:global, {:todo_server, name}}
   end
 
   # GenServer Callbacks
