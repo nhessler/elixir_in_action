@@ -1,0 +1,10 @@
+%{"cowboy": {:hex, :cowboy, "1.0.1", "810efe0b51cbbb97b175e605a520963452990b6568f93306b4fe88955d40fe94", [:rebar], [{:cowlib, "~> 1.0.0", [hex: :cowlib, repo: "hexpm", optional: false]}, {:ranch, "~> 1.0", [hex: :ranch, repo: "hexpm", optional: false]}], "hexpm"},
+  "cowlib": {:hex, :cowlib, "1.0.2", "9d769a1d062c9c3ac753096f868ca121e2730b9a377de23dec0f7e08b1df84ee", [], [], "hexpm"},
+  "gproc": {:hex, :gproc, "0.3.1", "ec14f40cb941bde3f940de59c11e59beb2977e90dbae72fab3ddf77743fd4ea9", [], [], "hexpm"},
+  "hackney": {:hex, :hackney, "0.14.3", "fb8c6946bef651c6796f46fbee5d3891581b755baa9d373bc2da97c0ffa56ff1", [], [{:idna, "1.0.1", [hex: :idna, repo: "hexpm", optional: false]}], "hexpm"},
+  "httpoison": {:hex, :httpoison, "0.4.3", "6fc5fe17733d296c53db51ad751e1b3d8d1b4cd68b4a1d556fd9a1fecfc7786c", [], [{:hackney, "~> 0.14.1", [hex: :hackney, repo: "hexpm", optional: false]}], "hexpm"},
+  "idna": {:hex, :idna, "1.0.1", "bfbf4ae0f4d346d46726d9d3084a84ffaef5fd2a0299090da07dcf65ea2088eb", [], [], "hexpm"},
+  "meck": {:hex, :meck, "0.8.2", "f15f7d513e14ec8c8dee9a95d4ae585b3e5a88bf0fa6a7573240d6ddb58a7236", [], [], "hexpm"},
+  "mime": {:hex, :mime, "1.1.0", "01c1d6f4083d8aa5c7b8c246ade95139620ef8effb009edde934e0ec3b28090a", [], [], "hexpm"},
+  "plug": {:hex, :plug, "1.4.3", "236d77ce7bf3e3a2668dc0d32a9b6f1f9b1f05361019946aae49874904be4aed", [:mix], [{:cowboy, "~> 1.0.1 or ~> 1.1", [hex: :cowboy, repo: "hexpm", optional: true]}, {:mime, "~> 1.0", [hex: :mime, repo: "hexpm", optional: false]}], "hexpm"},
+  "ranch": {:hex, :ranch, "1.4.0", "10272f95da79340fa7e8774ba7930b901713d272905d0012b06ca6d994f8826b", [], [], "hexpm"}}
